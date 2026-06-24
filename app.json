@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "InTouch",
+    "slug": "intouch",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8F0"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.intouch.app",
+      "infoPlist": {
+        "NSContactsUsageDescription": "InTouch uses your contacts to help you call people who matter most.",
+        "NSUserNotificationsUsageDescription": "InTouch uses notifications to send gentle daily call reminders."
+      }
+    },
+    "android": {
+      "package": "com.intouch.app",
+      "permissions": [
+        "READ_CONTACTS",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-contacts",
+      "expo-notifications"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
