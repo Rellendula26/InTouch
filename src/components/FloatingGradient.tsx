@@ -26,12 +26,12 @@ export const FloatingGradient = ({
         Animated.timing(floatAnim, {
           toValue: 1,
           duration,
-          useNativeDriver: true
+          useNativeDriver: false
         }),
         Animated.timing(floatAnim, {
           toValue: 0,
           duration,
-          useNativeDriver: true
+          useNativeDriver: false
         })
       ])
     );
