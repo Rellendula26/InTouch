@@ -49,19 +49,27 @@ const CirclesNavigator = () => (
 
 const MainTabs = () => (
   <Tab.Navigator
+    initialRouteName="Home"
     screenOptions={{
       headerShown: false,
       tabBarStyle: {
         backgroundColor: "rgba(255,255,255,0.88)",
         borderTopColor: "rgba(0,0,0,0.06)",
-        position: "absolute"
+        position: "absolute",
+        height: 72,
+        paddingTop: 8
       },
       tabBarLabelStyle: {
         fontSize: 12,
         fontWeight: "600"
       },
+      tabBarItemStyle: {
+        borderRadius: 16,
+        marginHorizontal: 4
+      },
       tabBarActiveTintColor: palette.accent,
-      tabBarInactiveTintColor: palette.textSecondary
+      tabBarInactiveTintColor: palette.textSecondary,
+      tabBarAccessibilityLabel: "Bottom navigation"
     }}
   >
     <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: tabIcon("☎️"), title: "Home" }} />
@@ -90,14 +98,21 @@ export const AppNavigator = () => {
       {!state.onboardingCompleted ? (
         <OnboardingScreen />
       ) : (
-        <RootStack.Navigator>
+        <RootStack.Navigator
+          screenOptions={{
+            headerShown: false,
+            animation: "fade_from_bottom",
+            animationDuration: 220,
+            gestureEnabled: true
+          }}
+        >
           <RootStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
           <RootStack.Screen
             name="Recommendations"
             component={RecommendationScreen}
-            options={{ headerShown: false }}
+            options={{ animation: "slide_from_right" }}
           />
-          <RootStack.Screen name="Reflection" component={ReflectionScreen} options={{ headerShown: false }} />
+          <RootStack.Screen name="Reflection" component={ReflectionScreen} options={{ animation: "fade" }} />
         </RootStack.Navigator>
       )}
     </NavigationContainer>

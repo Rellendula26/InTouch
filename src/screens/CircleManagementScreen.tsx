@@ -72,7 +72,15 @@ export const CircleManagementScreen = () => {
           ListHeaderComponent={
             <View>
               <Text style={styles.title}>Circles</Text>
-              <Text style={styles.subtitle}>Create warm relationship groups and keep them intentional.</Text>
+              <Text style={styles.subtitle}>Create warm relationship groups and keep outreach intentional.</Text>
+
+              <GlassCard style={styles.explainerCard}>
+                <Text style={styles.explainerTitle}>What is a circle?</Text>
+                <Text style={styles.explainerBody}>
+                  A circle is a custom group like Family, Mentors, or Penn Friends. Pick circles on Home and InTouch
+                  suggests who to call from those groups.
+                </Text>
+              </GlassCard>
 
               <GlassCard style={styles.formCard}>
                 <Text style={styles.formTitle}>{editingCircleId ? "Edit Circle" : "Create Circle"}</Text>
@@ -150,7 +158,20 @@ const styles = StyleSheet.create({
     lineHeight: 22
   },
   formCard: {
-    marginTop: 18
+    marginTop: 12
+  },
+  explainerCard: {
+    marginTop: 16
+  },
+  explainerTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: palette.textPrimary
+  },
+  explainerBody: {
+    marginTop: 8,
+    color: palette.textSecondary,
+    lineHeight: 20
   },
   formTitle: {
     fontSize: 18,

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, ViewStyle } from "react-native";
+import React, { useEffect, useMemo, useRef } from "react";
+import { Animated, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 interface FloatingGradientProps {
   color: string;
@@ -7,7 +7,7 @@ interface FloatingGradientProps {
   top: number;
   left: number;
   duration?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const FloatingGradient = ({
@@ -19,6 +19,7 @@ export const FloatingGradient = ({
   style
 }: FloatingGradientProps) => {
   const floatAnim = useRef(new Animated.Value(0)).current;
+  const travel = useMemo(() => Math.max(6, Math.round(size * 0.05)), [size]);
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -41,12 +42,27 @@ export const FloatingGradient = ({
 
   const translateY = floatAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [-8, 10]
+    outputRange: [-travel, travel]
+  });
+
+  const translateX = floatAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [travel * -0.8, travel * 0.8]
   });
 
   const scale = floatAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.96, 1.05]
+    outputRange: [0.97, 1.04]
+  });
+
+  const opacity = floatAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.55, 0.78]
+  });
+
+  const rotate = floatAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["-4deg", "4deg"]
   });
 
   return (
@@ -59,7 +75,8 @@ export const FloatingGradient = ({
           height: size,
           top,
           left,
-          transform: [{ translateY }, { scale }]
+          opacity,
+          transform: [{ translateY }, { translateX }, { scale }, { rotate }]
         },
         style
       ]}
@@ -70,7 +87,6 @@ export const FloatingGradient = ({
 const styles = StyleSheet.create({
   blob: {
     position: "absolute",
-    borderRadius: 999,
-    opacity: 0.7
+    borderRadius: 999
   }
 });

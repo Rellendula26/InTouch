@@ -19,13 +19,17 @@ type RecommendationNav = NativeStackNavigationProp<RootStackParamList, "Recommen
 export const RecommendationScreen = () => {
   const navigation = useNavigation<RecommendationNav>();
   const route = useRoute<RecommendationRoute>();
-  const { state, replaceRecommendation, getLastCallDateByContactId } = useAppState();
+  const { state, pickThreePeople, replaceRecommendation, getLastCallDateByContactId, isDailyUnlocked } = useAppState();
   const [recommendations, setRecommendations] = useState(route.params.contacts);
 
   const circlesById = useMemo(() => new Map(state.circles.map((circle) => [circle.id, circle])), [state.circles]);
 
   const handleReplace = (contactId: string) => {
     setRecommendations((current) => replaceRecommendation(current, contactId));
+  };
+
+  const handleRefreshAll = () => {
+    setRecommendations(pickThreePeople());
   };
 
   const handleCall = async (phoneNumber: string, contactId: string) => {
@@ -48,19 +52,46 @@ export const RecommendationScreen = () => {
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content}>
           <Text style={styles.title}>Pick 3 people</Text>
-          <Text style={styles.subtitle}>Choose one person to call right now.</Text>
+          <Text style={styles.subtitle}>Call one now. Save the memory after.</Text>
 
-          {!recommendations.length && (
+          {isDailyUnlocked && (
+            <GlassCard style={styles.quickBar}>
+              <View style={styles.quickBarTop}>
+                <Text style={styles.quickLabel}>Today's 3</Text>
+                <TouchableOpacity onPress={handleRefreshAll}>
+                  <Text style={styles.refreshText}>Refresh all</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.quickHint}>Tap call on any card to start your conversation fast.</Text>
+            </GlassCard>
+          )}
+
+          {!isDailyUnlocked && (
+            <GlassCard style={styles.lockedCard}>
+              <Text style={styles.emptyTitle}>Daily picks are locked</Text>
+              <Text style={styles.emptyBody}>Make one call from Home first, then your 3-person picks unlock.</Text>
+              <PrimaryButton
+                label="Back to Home"
+                onPress={() => navigation.navigate("MainTabs", { screen: "Home" })}
+              />
+            </GlassCard>
+          )}
+
+          {isDailyUnlocked && !recommendations.length && (
             <GlassCard>
               <Text style={styles.emptyTitle}>No recommendations yet</Text>
               <Text style={styles.emptyBody}>Go back and adjust circles, then pick 3 again.</Text>
             </GlassCard>
           )}
 
-          {recommendations.map((contact) => {
+          {isDailyUnlocked &&
+            recommendations.map((contact, index) => {
             const lastCallDate = getLastCallDateByContactId(contact.id);
             return (
-              <GlassCard key={contact.id} style={styles.card}>
+              <GlassCard key={contact.id} style={[styles.card, index === 0 && styles.firstCard]}>
+                <View style={styles.cardTop}>
+                  <Text style={styles.rankPill}>#{index + 1}</Text>
+                </View>
                 <Text style={styles.contactName}>{contact.name}</Text>
                 <Text style={styles.meta}>
                   Last call: {lastCallDate ? formatDateLabel(lastCallDate) : "No calls logged yet"}
@@ -107,8 +138,50 @@ const styles = StyleSheet.create({
     color: palette.textSecondary,
     marginBottom: 12
   },
+  quickBar: {
+    marginBottom: 6
+  },
+  quickBarTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  quickLabel: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: palette.textPrimary
+  },
+  refreshText: {
+    color: palette.accent,
+    fontWeight: "700"
+  },
+  quickHint: {
+    marginTop: 6,
+    color: palette.textSecondary
+  },
   card: {
     marginTop: 12
+  },
+  firstCard: {
+    borderColor: "rgba(139, 116, 217, 0.35)",
+    borderWidth: 1.2
+  },
+  lockedCard: {
+    marginTop: 4,
+    gap: 10
+  },
+  cardTop: {
+    alignItems: "flex-start"
+  },
+  rankPill: {
+    color: palette.accent,
+    fontWeight: "700",
+    fontSize: 12,
+    backgroundColor: "rgba(139, 116, 217, 0.15)",
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 999,
+    overflow: "hidden"
   },
   contactName: {
     fontSize: 22,
