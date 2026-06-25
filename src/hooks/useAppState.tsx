@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { createId } from "../lib/id";
+import { dateKey } from "../lib/date";
 import { disableReminders, scheduleDailyReminder } from "../services/notificationService";
 import { recommendationService } from "../services/recommendationService";
 import { defaultAppState, loadAppState, saveAppState } from "../storage/appStateStorage";
@@ -27,6 +28,8 @@ interface AppContextValue {
   setReminderEnabled: (enabled: boolean) => Promise<void>;
   setReminderTime: (time: ReminderTime) => Promise<void>;
   getLastCallDateByContactId: (contactId: string) => string | null;
+  isDailyUnlocked: boolean;
+  getDailyPromptContact: () => Contact | null;
 }
 
 const AppContext = createContext<AppContextValue | undefined>(undefined);
@@ -203,6 +206,27 @@ export const AppStateProvider = ({ children }: { children: React.ReactNode }) =>
     [state.callLogs]
   );
 
+  const isDailyUnlocked = useMemo(() => {
+    const today = dateKey(new Date().toISOString());
+    return state.callLogs.some((log) => dateKey(log.timestamp) === today);
+  }, [state.callLogs]);
+
+  const getDailyPromptContact = useCallback((): Contact | null => {
+    if (!state.contacts.length) {
+      return null;
+    }
+
+    const selectedSet = new Set(state.selectedCircleIds);
+    const pool = selectedSet.size
+      ? state.contacts.filter((contact) => contact.circles.some((circleId) => selectedSet.has(circleId)))
+      : state.contacts;
+
+    const safePool = pool.length ? pool : state.contacts;
+    const today = dateKey(new Date().toISOString());
+    const seed = [...today].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return safePool[seed % safePool.length] ?? safePool[0] ?? null;
+  }, [state.contacts, state.selectedCircleIds]);
+
   const value = useMemo<AppContextValue>(
     () => ({
       state,
@@ -219,7 +243,9 @@ export const AppStateProvider = ({ children }: { children: React.ReactNode }) =>
       addCallLog,
       setReminderEnabled,
       setReminderTime,
-      getLastCallDateByContactId
+      getLastCallDateByContactId,
+      isDailyUnlocked,
+      getDailyPromptContact
     }),
     [
       addCallLog,
@@ -228,6 +254,8 @@ export const AppStateProvider = ({ children }: { children: React.ReactNode }) =>
       createCircle,
       deleteCircle,
       getLastCallDateByContactId,
+      getDailyPromptContact,
+      isDailyUnlocked,
       pickThreePeople,
       replaceRecommendation,
       setContacts,

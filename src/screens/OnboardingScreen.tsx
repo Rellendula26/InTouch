@@ -6,6 +6,7 @@ import { GlassCard } from "../components/GlassCard";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { appCopy } from "../constants/copy";
 import { palette } from "../constants/theme";
+import { type } from "../constants/typography";
 import { useAppState } from "../hooks/useAppState";
 import { importDeviceContacts, requestContactsPermission } from "../services/contactService";
 
@@ -67,14 +68,16 @@ const styles = StyleSheet.create({
   brand: {
     fontSize: 42,
     fontWeight: "800",
-    color: palette.textPrimary
+    color: palette.textPrimary,
+    fontFamily: type.brand
   },
   headline: {
     marginTop: 16,
     fontSize: 33,
     lineHeight: 40,
     color: palette.textPrimary,
-    fontWeight: "700"
+    fontWeight: "700",
+    fontFamily: type.heading
   },
   subheadline: {
     marginTop: 12,
@@ -89,7 +92,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: palette.textPrimary
+    color: palette.textPrimary,
+    fontFamily: type.heading
   },
   cardBody: {
     color: palette.textSecondary,

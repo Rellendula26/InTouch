@@ -122,6 +122,24 @@ Only the user controls call initiation through the operating system phone interf
 
 ---
 
+## Web-First Deployment (Vercel)
+
+This project is configured to deploy as a static Expo web app on Vercel.
+
+- Local web preview: `npm run web`
+- Production web build: `npm run build:web`
+- Output directory: `dist`
+
+`vercel.json` is included with:
+
+- `buildCommand`: `npm run build:web`
+- `outputDirectory`: `dist`
+- SPA rewrite so all routes resolve to `index.html`
+
+For best UX on desktop browsers, the web build renders in a centered mobile-style shell while remaining fully responsive on phones.
+
+---
+
 ## Documentation Map
 
 - `PRODUCT_SPEC.md` - full product definition and behavior
