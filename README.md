@@ -1,155 +1,49 @@
 # InTouch
 
-**Tagline:** _A real call beats another scroll._
+A local-first relationship-maintenance app that encourages real phone calls. Organize contacts into circles, ask for three people to call, choose one, and record how the call went with an optional reflection.
 
-InTouch is a mobile relationship-maintenance app that helps people stay connected to the people who matter most through intentional phone calls.
+The repository contains an Expo/React Native application, not only product documentation. It uses TypeScript, React Navigation, Expo Contacts, Expo Notifications, Expo Linking, and AsyncStorage.
 
-Modern social media often creates the feeling of connection without real interaction. InTouch is built around one core behavior: pick someone, call them, and stay in touch.
+## Run
 
----
+Use a Node.js version supported by Expo SDK 55 and npm:
 
-## Core Mission
+```bash
+npm ci
+npm start
+```
 
-InTouch exists to encourage real conversations.
+Follow the Expo development-server instructions for your target device. For the static web preview:
 
-- Not content creation
-- Not networking
-- Not follower counts
-- Not passive scrolling
-- Yes to meaningful relationships
+```bash
+npm run web
+```
 
-Every product decision should support one thesis:
+For native builds, after installing the platform's development tools:
 
-> **A real call beats another scroll.**
+```bash
+npm run ios
+npm run android
+```
 
----
+Checks and web export:
 
-## What Problem We Solve
+```bash
+npm run typecheck
+npm run build:web
+```
 
-People care deeply about close relationships, but often fail to reach out consistently.
+The web export is written to `dist`; `vercel.json` configures that output for Vercel.
 
-This usually is not neglect. It is friction:
+## Usage
 
-- Life gets busy
-- Decision fatigue sets in
-- People do not know who to call
-- "I will call later" becomes "I forgot"
+Import contacts with permission, manage their circles, select a call pool, and use the recommendation screen. The app hands call initiation to the operating system through a phone link. Record Connected, No Answer, or Call Later afterward. Daily reminder notifications require permission.
 
-InTouch reduces the gap between thinking about someone and actually calling them.
+## Layout and privacy
 
----
+- `src/screens/`: onboarding, circles, recommendations, reflections, timeline, and settings.
+- `src/services/`: contacts, recommendations, and reminders.
+- `src/storage/`: local state persistence.
+- `PRODUCT_SPEC.md`, `DESIGN_GUIDE.md`, `TECHNICAL_CONSTRAINTS.md`, and `FEATURE_ROADMAP.md`: product/design context.
 
-## MVP Experience
-
-1. User downloads app.
-2. User grants contacts permission.
-3. User creates circles (for example: Family, Close Friends, Mentors, Penn Friends).
-4. User assigns contacts to one or more circles.
-5. User selects one or more circles as call pool filters.
-6. User taps **Pick 3 People**.
-7. App randomly suggests three contacts from selected circles.
-8. User chooses one person.
-9. App opens native phone call flow using `tel:`.
-10. User returns to app and logs outcome:
-    - Connected
-    - No Answer
-    - Call Later
-11. User can optionally write a short artifact note.
-12. History is saved locally.
-
----
-
-## MVP Feature Scope
-
-- Contact import from phone
-- Circle creation and management
-- Multi-circle contact assignment
-- Circle-based call suggestions
-- Random "Pick 3" flow
-- Native dialer handoff (no silent calling)
-- Post-call outcome logging
-- Optional call artifacts/notes
-- Local call history
-- Local daily reminder notifications
-
----
-
-## Design Philosophy
-
-InTouch should feel:
-
-- Warm
-- Intentional
-- Minimal
-- Premium
-- Emotionally positive
-
-Avoid:
-
-- CRM-like interface
-- Productivity dashboard feel
-- Aggressive gamification
-- Social media addiction mechanics
-
-InTouch should feel like a **relationship OS**, not a contacts manager.
-
----
-
-## Privacy Promise (MVP)
-
-InTouch is privacy-first:
-
-- Local-only storage
-- No backend
-- No account system
-- No contact uploads
-- No analytics
-- No AI features in MVP
-
-Only the user controls call initiation through the operating system phone interface.
-
----
-
-## Tech Baseline (MVP)
-
-- Expo
-- React Native
-- TypeScript
-- Expo Contacts
-- Expo Notifications
-- AsyncStorage
-- Expo Linking
-
----
-
-## Web-First Deployment (Vercel)
-
-This project is configured to deploy as a static Expo web app on Vercel.
-
-- Local web preview: `npm run web`
-- Production web build: `npm run build:web`
-- Output directory: `dist`
-
-`vercel.json` is included with:
-
-- `buildCommand`: `npm run build:web`
-- `outputDirectory`: `dist`
-- SPA rewrite so all routes resolve to `index.html`
-
-For best UX on desktop browsers, the web build renders in a centered mobile-style shell while remaining fully responsive on phones.
-
----
-
-## Documentation Map
-
-- `PRODUCT_SPEC.md` - full product definition and behavior
-- `DESIGN_GUIDE.md` - UX/UI and content tone principles
-- `TECHNICAL_CONSTRAINTS.md` - architecture and implementation boundaries
-- `FEATURE_ROADMAP.md` - phased delivery plan (V1-V4)
-- `AGENTS.md` - implementation instructions for coding agents/contributors
-
----
-
-## Current Project State
-
-This repository currently contains foundational product documentation only. Application code should begin after documentation alignment and signoff.
+App state is stored locally; this checkout does not include an account backend. Browser previews do not provide the same contact-import, phone, or notification capabilities as native devices. Do not treat a successful web preview as native-device verification. No automated test script is included; build and device behavior were not retested for this documentation update.
